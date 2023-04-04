@@ -3,7 +3,7 @@ import React, { useState } from "react";
 export default function Sidebar(props) {
   const [isActive, setIsActive] = useState(1);
   return (
-    <div className="h-full w-[200px] border-e">
+    <div className="h-full w-[200px] border-e sm:block hidden">
       <div className="flex flex-col gap-5">
         <button
           className={`w-[175px] h-[40px] rounded-xl text-start  ps-5 ${

@@ -25,12 +25,12 @@ export default function ChatPage(props) {
               <input
                 type="text"
                 name="room"
-                className="w-10/12 bg-transparent placeholder:text-black px-5 py-1 border-b border-s rounded-full border-[#081325]"
+                className="lg:w-10/12 w-9/12 bg-transparent placeholder:text-black px-5 py-1 border-b border-s rounded-full border-[#081325]"
                 placeholder="Enter room"
               />
               <button
                 type="submit"
-                className="border-b border-s rounded-full border-[#081325] px-5 py-2 bg-[#149b8b] hover:bg-[#23D3BD]"
+                className="border-b border-s rounded-full border-[#081325] sm:px-5 sm:py-1 text-[10px] lg:text-xl p-2 bg-[#149b8b] hover:bg-[#23D3BD]"
               >
                 enter chat
               </button>

@@ -25,9 +25,9 @@ function App() {
     <div className="bg-[#081325] h-[832px] w-full relative ">
       <Navbar />
       <button onClick={signOutHandler}>sign out</button>
-      <div className=" flex gap-10 h-[500px] container max-w-screen-xl mx-auto">
+      <div className=" flex gap-10 h-[500px] container max-w-screen-xl mx-auto items-center">
         <Sidebar />
-        <div className=" w-10/12 border bg-[#102444] rounded-3xl p-10 h-full">
+        <div className=" w-full sm:w-10/12 border bg-[#102444] rounded-3xl p-10 h-full">
           <ChatPage
             setIsAuth={setIsAuth}
             isAuth={isAuth}
