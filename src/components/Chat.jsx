@@ -7,14 +7,27 @@ import {
   serverTimestamp,
   where,
 } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { auth, db } from "../firebaseConfig";
+import "moment/locale/cs";
 
 export default function Chat(props) {
   const { room } = props;
   const messageRef = collection(db, "message");
   const [messages, setMessages] = useState();
-  const [isMe, setIsMe] = useState(auth.currentUser.displayName);
+  const [isMe, setIsMe] = useState(
+    auth.currentUser && auth.currentUser.displayName
+  );
+
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     const queryMessage = query(
@@ -25,6 +38,7 @@ export default function Chat(props) {
 
     onSnapshot(queryMessage, (snapShot) => {
       let messages = [];
+
       snapShot.forEach((doc) => {
         messages.push({ ...doc.data(), id: doc.id });
       });
@@ -35,10 +49,11 @@ export default function Chat(props) {
   async function sumbitHandler(e) {
     e.preventDefault();
     if (e.target.message.value == "") return;
-
+    let date = new Date();
+    console.log(date);
     await addDoc(messageRef, {
       message: e.target.message.value,
-      createAt: serverTimestamp(),
+      createAt: date,
       user: auth.currentUser.displayName,
       room,
     });
@@ -46,7 +61,7 @@ export default function Chat(props) {
     e.target.message.value = "";
   }
   return (
-    <div className="w-full h-full flex flex-col gap-3">
+    <div className="w-full h-full flex flex-col gap-3 justify-between">
       <div className="w-full bg-[#23D3BD] mt-[-20px] p-3 rounded-full text-xl">
         welcome in <span className="uppercase">{room}</span>
       </div>
@@ -55,8 +70,20 @@ export default function Chat(props) {
           messages.map((message, id) => {
             let date = "";
             try {
-              date = new Date(message.createAt.seconds).toLocaleTimeString();
-            } catch (error) {}
+              date = message.createAt.toDate();
+              let day = date.getDate();
+              let month = date.getMonth() + 1;
+              let year = date.getFullYear();
+              let hours = date.getHours();
+              let minutes = date.getMinutes();
+              let seconds = date.getSeconds();
+
+              date = `${hours < 10 ? `0${hours}` : hours}:${
+                minutes < 10 ? `0${minutes}` : minutes
+              }:${seconds < 10 ? `0${seconds}` : seconds}  `;
+            } catch (error) {
+              console.log(error);
+            }
 
             return (
               <div className="w-full flex flex-col" key={id}>
@@ -67,7 +94,6 @@ export default function Chat(props) {
                       : `self-start  text-gray-400`
                   }
                 >
-                  {" "}
                   {date}
                 </p>
                 <div
@@ -84,10 +110,11 @@ export default function Chat(props) {
               </div>
             );
           })}
+        <div ref={messagesEndRef} />
       </div>
       <form
         onSubmit={sumbitHandler}
-        className="w-full flex bg-[#b4b4b4] px-2 py-2 rounded-full gap-2"
+        className="w-full flex bg-[#b4b4b4] px-2 py-2 rounded-full gap-2 self-end"
       >
         <input
           type="text"
